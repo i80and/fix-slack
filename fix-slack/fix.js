@@ -1,10 +1,28 @@
+// @flow
+/*
+ * Copyright (c) 2015 Andrew Aldridge <i80and@foxquill.com>
+ *
+ * Permission to use, copy, modify, and distribute this software for any
+ * purpose with or without fee is hereby granted, provided that the above
+ * copyright notice and this permission notice appear in all copies.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+ * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+ * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+ * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+ * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+ */
+'use strict'
+
 // Remove any crufty elements we might have
 try {
     document.body.removeChild(document.getElementById('injected-sidebar'))
-} catch(err) {}
+} catch(err) { /* Element does not exist */ }
 try {
     document.body.removeChild(document.getElementById('injected-style'))
-} catch(err) {}
+} catch(err) { /* Element does not exist */ }
 
 // Create a new sidebar
 const sidebar = document.createElement('div')
@@ -25,7 +43,7 @@ function waitUntilReady(callback, pollInterval) {
 
     if(!document.querySelector('ts-message') ||
         document.querySelector('.unprocessed')) {
-        setTimeout(() => waitUntilReady(callback), pollInterval)
+        setTimeout(() => waitUntilReady(callback, pollInterval), pollInterval)
         return
     }
 
@@ -42,7 +60,7 @@ function initSidebar() {
     function renderSidebar(messageElement) {
         const senderElement = messageElement.querySelector('.message_sender > a')
         const bodyElement = messageElement.querySelector('.message_body')
-        const date = new Date(messageElement.dataset.ts * 1000)
+        const date = new Date(parseInt(messageElement.dataset.ts) * 1000)
 
         const post = document.createElement('div')
         const dateElement = document.createElement('span')
@@ -67,19 +85,23 @@ function initSidebar() {
     }
 
     function render() {
-        console.log(`Rendering ${pendingChanges.length} elements`)
-        for(let messageElement of pendingChanges) {
+        for(const messageElement of pendingChanges) {
             // Ensure that this element still exists
             if(messageElement.parentNode === null) {
                 continue
             }
 
             // Ensure that this is a new message
-            const messageId = parseInt(messageElement.id.match(/_([0-9]+)$/)[1])
+            const matches = messageElement.id.match(/_([0-9]+)$/)
+            if(!matches) {
+                throw new Error(`Unknown id format: ${messageElement.id}`)
+            }
+            const messageId = parseInt(matches[1])
             if(messageId <= latestMessageId) {
                 continue
             }
 
+            latestMessageId = messageId
             if(messageElement.classList.contains('bot_message')) {
                 renderSidebar(messageElement)
                 continue
@@ -87,13 +109,13 @@ function initSidebar() {
         }
     }
 
-    function onMessageChange(args, pollInterval) {
+    function onMessageChange(nodes, pollInterval) {
         // Wait a tick to collect our messages; otherwise we check for initial
         // state before Slack has populated it.
-        pendingChanges.push.apply(pendingChanges, args)
+        pendingChanges.push.apply(pendingChanges, Array.from(nodes))
 
         // If this is our first pending change, schedule a render cycle
-        if(pendingChanges.length === args.length) {
+        if(pendingChanges.length === nodes.length) {
             waitUntilReady(function() {
                 try {
                     render()
@@ -108,8 +130,8 @@ function initSidebar() {
 
     const rootObserver = new MutationObserver((records) => {
         const flattened = []
-        for(let record of records) {
-            for(let element of record.addedNodes) {
+        for(const record of records) {
+            for(const element of record.addedNodes) {
                 if(element.tagName === 'TS-MESSAGE') {
                     flattened.push(element)
                 }

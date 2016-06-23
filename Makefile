@@ -10,7 +10,8 @@ node_modules: package.json
 	npm update
 
 lint: | node_modules
-	./node_modules/.bin/jshint ./fix-slack/
+	./node_modules/.bin/eslint ./fix-slack
+	./node_modules/.bin/flow
 
 clean:
 	rm -f fix-slack.xpi
