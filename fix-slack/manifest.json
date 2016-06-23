@@ -1,0 +1,25 @@
+{
+  "manifest_version": 2,
+  "name": "FixSlack",
+  "version": "0.0.1",
+
+  "description": "Improves upon Slack by adding a sidebar and fixing layout issues.",
+  "icons": {
+    "48": "icons/border-48.png"
+  },
+
+  "applications": {
+    "gecko": {
+      "id": "fixslack@foxquill.com",
+      "strict_min_version": "45.0"
+    }
+  },
+
+  "content_scripts": [
+    {
+      "matches": ["https://*.slack.com/messages",
+                  "https://*.slack.com/messages/*"],
+      "js": ["fix.js"]
+    }
+  ]
+}
