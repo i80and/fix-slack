@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "FixSlack",
-  "version": "0.0.1",
+  "version": "0.0.1-dev",
 
   "description": "Improves upon Slack by adding a sidebar and fixing layout issues.",
   "icons": {
