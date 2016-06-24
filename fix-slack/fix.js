@@ -85,7 +85,7 @@ function initSidebar() {
     }
 
     function render() {
-        for(const messageElement of pendingChanges) {
+        for(let messageElement of pendingChanges) {
             // Ensure that this element still exists
             if(messageElement.parentNode === null) {
                 continue
@@ -130,8 +130,8 @@ function initSidebar() {
 
     const rootObserver = new MutationObserver((records) => {
         const flattened = []
-        for(const record of records) {
-            for(const element of record.addedNodes) {
+        for(let record of records) {
+            for(let element of record.addedNodes) {
                 if(element.tagName === 'TS-MESSAGE') {
                     flattened.push(element)
                 }
