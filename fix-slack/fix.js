@@ -52,7 +52,7 @@ function waitUntilReady(callback, pollInterval) {
 
 function initSidebar() {
     const msgsContainer = document.getElementById('msgs_div')
-    sidebar.innerHTML = ''
+    sidebar.innerText = ''
 
     const pendingChanges = []
     let latestMessageId = 0
@@ -70,7 +70,7 @@ function initSidebar() {
         post.appendChild(dateElement)
         post.appendChild(body)
         sender.innerText = senderElement.innerText
-        body.innerHTML = bodyElement.innerHTML
+        body.appendChild(bodyElement)
         dateElement.innerText = date.toLocaleString(undefined,
                                                     { hour: 'numeric',
                                                       minute: 'numeric' })
@@ -155,7 +155,7 @@ function main() {
     // Style tweaks
     const style = document.createElement('style')
     style.id = 'injected-style'
-    style.innerHTML = 'ts-message .message_body { margin-left: 7em; display: block; }\n' +
+    style.innerText = 'ts-message .message_body { margin-left: 7em; display: block; }\n' +
                       'ts-message .message_sender { width: 7em; float: left; text-align: right; ' +
                       '                             overflow: hidden; height: 20px; ' +
                       '                             text-overflow: ellipsis; white-space: nowrap; }\n' +
