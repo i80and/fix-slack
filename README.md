@@ -1,18 +1,21 @@
 About
 =====
 
-A simple WebExtension tweaking Slack.
+A WebExtension monkeypatch for [Slack](https://slack.com) that improves
+site functionality and adds missing features.
+
 
 Features
 ========
 
-* Moves bot posts into a sidebar
+* Moves bot posts into a sidebar, making it easier to track
+  conversations in channels with busy integrations.
 * Improves layout.
 
 TODO
 ====
 
-* Threaded comments
+* Threaded conversations
 
 License
 =======
