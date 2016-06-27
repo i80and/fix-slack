@@ -1,6 +1,6 @@
 {
   "name": "fix-slack",
-  "version": "0.0.2",
+  "version": "0.0.2-dev",
   "author": "Andrew Aldridge <i80and@foxquill.com>",
   "dependencies": {
     "jshint": "2.9",
